@@ -1,7 +1,8 @@
 # cx_Oracle 연동한 응급중증도 risk-factors 10년치 추출 @ 2021.02.01
 
 import cx_Oracle
-import time, csv
+import csv, math
+from datetime import datetime, timedelta
 
 # oracle instant client 연동 및 path 지정
 import os
@@ -15,6 +16,9 @@ import argparse
 
 def main(db_list, duration_list):
 
+    # timestamp 시작시간
+    jobStTime = datetime.now()
+    
     print('target DB : {}'.format(db_list))
     print('searching duration : {}'.format(duration_list))
 
@@ -69,6 +73,8 @@ def main(db_list, duration_list):
     #print(er_list_tuple)
     #print("length of er_list = ", str(len(er_list_tuple)))
 
+    # job 처리건수 init
+    jobCount = 0
     for i in range(len(er_list_tuple)):
 
         print(str(er_list_tuple[i][0]).replace(',','').replace('(', '').replace(')', '').replace("'", ''))
@@ -149,6 +155,9 @@ def main(db_list, duration_list):
                     df.to_csv('./output_' + duration_list[0] + '_' + duration_list[1] + '.csv', index=False, mode='a', encoding="utf-8-sig", header=False)     
                     print('concatanation finished successfuly') 
                 
+                # job 처리건수 ++
+                jobCount = jobCount + 1
+
             except Exception as e: 
                 df.to_csv('./raised_error_' + duration_list[0] + '_' + duration_list[1] + '.csv', index=False, encoding="utf-8-sig") 
                 print('DataFrame append error!!!! please check it out. : ', e) 
@@ -161,6 +170,22 @@ def main(db_list, duration_list):
     cursor.close()
     db.close()
 
+    # timestamp 종료시간
+    jobFnTime = datetime.now()
+
+    print('============================')
+    print('작업시작시간(A) : ', jobStTime)
+    print('작업종료시간(B) : ', jobFnTime)    
+
+    if (jobFnTime-jobStTime).seconds / 3600 > 1 :
+        print('*소요시간(B-A) : ', str(round(((jobFnTime-jobStTime).seconds / 3600), 1)) + '시간')
+    elif (jobFnTime-jobStTime).seconds / 60 > 1 :
+        print('*소요시간(B-A) : ', str(round(((jobFnTime-jobStTime).seconds / 60), 1)) + '분')
+    else:
+        print('*소요시간(B-A) : ', str(round(((jobFnTime-jobStTime).seconds), 1)) + '초')
+
+    print('*총 작업건수 : ', str(jobCount) + '건')
+    
 # command-line 변수 가져오기
 # 참조 : https://basketdeveloper.tistory.com/57
 def get_arguments():
