@@ -14,6 +14,9 @@ import pandas as pd
 # command-line-arguments 참조 : https://basketdeveloper.tistory.com/57
 import argparse
 
+# job-logging시 time정보 연동 @ 2021.4.19.
+import time
+
 def main(db_list, duration_list):
 
     # timestamp 시작시간
