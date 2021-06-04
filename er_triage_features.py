@@ -129,12 +129,13 @@ def main(db_list, duration_list):
     
         
         if result4riskfactors != None:         
-
-            riskfactors = result4riskfactors + tuple(result4riskfactors[4].split('|'))
+            
+            # ER퇴실결과(8), KTAS(9) 추가 @ 2021.6.4.
+            riskfactors = result4riskfactors + er_list_tuple[i][8] + er_list_tuple[i][9] + tuple(result4riskfactors[4].split('|'))
 
             #print(riskfactors)
 
-            df_main = pd.DataFrame(riskfactors, index = ['PAT_ID', 'PAT_NM', 'MEDDATE', 'MEDTIME', 'TOKENS', 'AST', 'AMYLASE', 'HR', 'DBP', 'BT', 'BS', 'AVPU',
+            df_main = pd.DataFrame(riskfactors, index = ['PAT_ID', 'PAT_NM', 'MEDDATE', 'MEDTIME', 'TOKENS', 'ERRSLT', 'KTAS', 'AST', 'AMYLASE', 'HR', 'DBP', 'BT', 'BS', 'AVPU',
                                                         'SEX', 'AGE', 'WBC', 'TROPONIN', 'NA', 'PT-P', 'ALT', 'PAO2', 'SPO2', 'SBP', 'RR', 'PH', 'PASTHIST', 'PAIN', 'LACTATE',
                                                         'PT-INR', 'POTASSIUM', 'HGB', 'HCT', 'CRP', 'CREATININE', 'CK-MB', 'T-BIL', 'C.C', ''])
         
